@@ -20,51 +20,58 @@
     </style>
 </head>
 <body>
-    <canvas id="nav" width="1000" height="600"></canvas>
+    <canvas id="canv" width="800" height="700">
+        Este browser não suporta o objeto canvas do HTML5.
+    </canvas>
     <script>
-    const canvas = document.getElementById("canv");
-const ctx = canvas.getContext("2d");
+        const canvas = document.getElementById("canv");
+        const ctx = canvas.getContext("2d");
 
-const nave = new Image();
-nave.src =  "img/nave.png"; //
+        const nave = new Image();
+        nave.src = "./nave.png"; 
 
-let x = 400 - nave.width / 2;
-const y = 700 - 160;
-const imageWidth = 160;
-const imageHeight = 160;
-const bulletWidth = 2;
-const bulletHeight = 5;
+        let x = 400;
+        const y = 700 - 160;
+        const imageWidth = 160;
+        const imageHeight = 160;
+        const bulletWidth = 2;
+        const bulletHeight = 5;
 
-nave.onload = function() {
-    ctx.drawImage(nave, x, y, imageWidth, imageHeight);
-};
+        nave.onload = function() {
+            console.log("Imagem carregada com sucesso.");
+            ctx.drawImage(nave, x, y, imageWidth, imageHeight);
+        };
 
-function movimentaNaveTeclado(tecla) {
-    ctx.clearRect(x, y, imageWidth, imageHeight);
-    if (tecla === 37) { // Seta para esquerda
-        x -= 50;
-        x = Math.max(0, x);
-    } else if (tecla === 39) { // Seta para direita
-        x += 50;
-        x = Math.min(canvas.width - imageWidth, x);
-    } else if (tecla === 32) { // Espaço
-        disparaTiro(x + imageWidth / 2 - bulletWidth / 2, y);
-    }
-    ctx.drawImage(nave, x, y, imageWidth, imageHeight);
-}
+        nave.onerror = function() {
+            console.error("Erro ao carregar a imagem.");
+            ctx.fillText("Erro ao carregar a imagem.", 10, 50);
+        };
 
-function disparaTiro(col, lin) {
-    if (lin > -bulletHeight) {
-        ctx.clearRect(col, lin, bulletWidth, bulletHeight);
-        ctx.fillRect(col, lin - bulletHeight, bulletWidth, bulletHeight);
-        setTimeout(function() { disparaTiro(col, lin - bulletHeight); }, 50);
-    }
-}
+        function movimentaNaveTeclado(tecla) {
+            ctx.clearRect(x, y, imageWidth, imageHeight);
+            if (tecla === 90) { // Tecla "z"
+                x -= 50;
+                x = Math.max(0, x);
+            } else if (tecla === 67) { // Tecla "c"
+                x += 50;
+                x = Math.min(canvas.width - imageWidth, x);
+            } else if (tecla === 40) { // Seta para baixo
+                disparaTiro(x + imageWidth / 2 - bulletWidth / 2, y);
+            }
+            ctx.drawImage(nave, x, y, imageWidth, imageHeight);
+        }
 
-document.addEventListener("keydown", function(evento) {
-    movimentaNaveTeclado(evento.keyCode);
-});
+        function disparaTiro(col, lin) {
+            if (lin > -bulletHeight) {
+                ctx.clearRect(col, lin, bulletWidth, bulletHeight);
+                ctx.fillRect(col, lin - bulletHeight, bulletWidth, bulletHeight);
+                setTimeout(function() { disparaTiro(col, lin - bulletHeight); }, 50);
+            }
+        }
 
+        document.addEventListener("keydown", function(evento) {
+            movimentaNaveTeclado(evento.keyCode);
+        });
     </script>
 </body>
 </html>
