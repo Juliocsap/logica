@@ -1,39 +1,70 @@
-
 <!DOCTYPE html>
-<!-- Nome: Julio Cesar Souza    n°:   Turma: 3°J -->
-
-
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numeros Primos <title>
-
-        <script>
-
-            function recebeNumero (){
-                var canvas = document.getElementById('meuCanvas');
-                if (canvas.getContext){
-                    var cntxt = canvas.getContext('2d');
-                    var maxWidth = 300;
-                    var lineHeight = 35;
-                    var x = (canvas.width - maxWidth) / 2;
-                    var y = 60;
-                    var grad =  cntxt.createLinearGradient(0, 0, canvas.width, 0);
-                    grad.addColorStop(0,"rgb(255,0, 0)");
-                    grad.addColorStop(0.5, "rgb(255, 255, 255)");
-                    grad.addColorStop(1,"rgb(0, 0, 0)");
-
-                    var N1 = parseInt(documen.getElementById("Numero1").value, 10);
-                    cntxt.fillStyle = "rgb(255, 255, 255)";
-                    cntxt.fillRect (0, 0, canvas.width, canvas.height);
-                    cntxt.font="30px Comic Sans MS";
-
-                }
-            }
-        </script>
+    <title>Movimentação de Imagem no Canvas</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        canvas {
+            background-color: #fff;
+            border: 1px solid #000;
+        }
+    </style>
 </head>
 <body>
-    
+    <canvas id="nav" width="1000" height="600"></canvas>
+    <script>
+    const canvas = document.getElementById("canv");
+const ctx = canvas.getContext("2d");
+
+const nave = new Image();
+nave.src =  "img/nave.png"; //
+
+let x = 400 - nave.width / 2;
+const y = 700 - 160;
+const imageWidth = 160;
+const imageHeight = 160;
+const bulletWidth = 2;
+const bulletHeight = 5;
+
+nave.onload = function() {
+    ctx.drawImage(nave, x, y, imageWidth, imageHeight);
+};
+
+function movimentaNaveTeclado(tecla) {
+    ctx.clearRect(x, y, imageWidth, imageHeight);
+    if (tecla === 37) { // Seta para esquerda
+        x -= 50;
+        x = Math.max(0, x);
+    } else if (tecla === 39) { // Seta para direita
+        x += 50;
+        x = Math.min(canvas.width - imageWidth, x);
+    } else if (tecla === 32) { // Espaço
+        disparaTiro(x + imageWidth / 2 - bulletWidth / 2, y);
+    }
+    ctx.drawImage(nave, x, y, imageWidth, imageHeight);
+}
+
+function disparaTiro(col, lin) {
+    if (lin > -bulletHeight) {
+        ctx.clearRect(col, lin, bulletWidth, bulletHeight);
+        ctx.fillRect(col, lin - bulletHeight, bulletWidth, bulletHeight);
+        setTimeout(function() { disparaTiro(col, lin - bulletHeight); }, 50);
+    }
+}
+
+document.addEventListener("keydown", function(evento) {
+    movimentaNaveTeclado(evento.keyCode);
+});
+
+    </script>
 </body>
 </html>
